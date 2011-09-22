@@ -12,7 +12,12 @@ namespace MvcApplication1.Controllers
             var cron = new Stopwatch();
             cron.Start();
             var svc = new TaskService.Service1Client();
-            var transformedValue = await svc.GetDataAsync(id);
+            string transformedValue = "";
+            for (int i = 0; i < 5; i++)
+            {
+                transformedValue += await svc.GetDataAsync(id) + ", ";
+                id++;
+            }
             var time = Convert.ToDouble(cron.ElapsedMilliseconds) / 1000;
             ViewBag.Time = time;
             return View("RetornoServico", (object)transformedValue);
