@@ -14,16 +14,11 @@ namespace MvcApplication1.Controllers
             var cron = new Stopwatch();
             cron.Start();
             var svc = new TaskService.Service1Client();
-            string transformedValue = "";
-            var tasks = new List<Task<string>>();
-            for (int i = 0; i < 5; i++)
-            {
-                var task = svc.GetDataAsync(id);
-                tasks.Add(task);
-                id++;
-            }
-            Task.WhenAll(tasks).ContinueWith(taskResults => transformedValue = string.Join(", ", taskResults.Result));
-            Task.WaitAll(tasks.ToArray());
+
+            var tasks = from e in Enumerable.Range(0, 5) select svc.GetDataAsync(id + e);
+            var results = await Task.WhenAll(tasks);
+            string transformedValue = string.Join(", ", results);
+            
             var time = Convert.ToDouble(cron.ElapsedMilliseconds) / 1000;
             ViewBag.Time = time;
             return View("RetornoServico", (object)transformedValue);
