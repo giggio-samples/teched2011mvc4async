@@ -15,8 +15,7 @@ namespace MvcApplication1.Controllers
             cron.Start();
             var svc = new TaskService.Service1Client();
 
-            var tasks = from e in Enumerable.Range(0, 5) select svc.GetDataAsync(id + e);
-            var results = await Task.WhenAll(tasks);
+            var results = await Task.WhenAll(from e in Enumerable.Range(0, 5) select svc.GetDataAsync(id + e));
             string transformedValue = string.Join(", ", results);
             
             var time = Convert.ToDouble(cron.ElapsedMilliseconds) / 1000;
